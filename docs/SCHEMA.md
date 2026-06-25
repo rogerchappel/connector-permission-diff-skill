@@ -23,3 +23,5 @@
 | `rules[].approver` | string | no | Human or role expected to approve. |
 
 Unknown actions are denied even when `defaultDecision` is omitted.
+
+See `fixtures/read-only-policy.json` for a stricter policy variant that blocks write actions.

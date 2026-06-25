@@ -1,0 +1,20 @@
+{
+  "connector": "demo-crm",
+  "rules": [
+    {
+      "action": "contacts.read",
+      "decision": "allow",
+      "reason": "Read-only contact lookup is safe for prep workflows."
+    },
+    {
+      "action": "deals.update",
+      "decision": "deny",
+      "reason": "This policy variant blocks all write actions."
+    },
+    {
+      "action": "contacts.delete",
+      "decision": "deny",
+      "reason": "Destructive actions are blocked."
+    }
+  ]
+}
