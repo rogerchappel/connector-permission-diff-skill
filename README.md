@@ -49,6 +49,8 @@ Markdown output is designed to paste into a release-candidate PR or approval thr
 
 Use `--fail-on-blocked` in CI when denied actions should fail the job with exit code `2`.
 
+See [docs/API.md](docs/API.md) for library usage.
+
 ## Limitations
 
 - JSON files only in the MVP.

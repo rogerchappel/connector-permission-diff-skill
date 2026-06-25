@@ -6,6 +6,9 @@
   "bin": {
     "connector-permission-diff": "./src/cli.js"
   },
+  "exports": {
+    ".": "./src/index.js"
+  },
   "scripts": {
     "test": "node --test",
     "check": "node --check src/cli.js && node --check src/index.js",
