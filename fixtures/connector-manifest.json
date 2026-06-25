@@ -1,0 +1,23 @@
+{
+  "connector": "demo-crm",
+  "actions": [
+    {
+      "name": "contacts.read",
+      "effect": "read",
+      "scope": "crm.contacts",
+      "rationale": "Look up account owner before drafting a follow-up."
+    },
+    {
+      "name": "deals.update",
+      "effect": "write",
+      "scope": "crm.deals",
+      "rationale": "Move a deal stage after a call."
+    },
+    {
+      "name": "contacts.delete",
+      "effect": "delete",
+      "scope": "crm.contacts",
+      "rationale": "Remove duplicate contacts."
+    }
+  ]
+}

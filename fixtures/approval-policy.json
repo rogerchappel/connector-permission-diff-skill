@@ -1,0 +1,21 @@
+{
+  "connector": "demo-crm",
+  "rules": [
+    {
+      "action": "contacts.read",
+      "decision": "allow",
+      "reason": "Read-only lookup is approved for CRM prep."
+    },
+    {
+      "action": "deals.update",
+      "decision": "needs_approval",
+      "reason": "Pipeline changes require account-owner approval.",
+      "approver": "account-owner"
+    },
+    {
+      "action": "contacts.delete",
+      "decision": "deny",
+      "reason": "Destructive contact changes are out of scope."
+    }
+  ]
+}

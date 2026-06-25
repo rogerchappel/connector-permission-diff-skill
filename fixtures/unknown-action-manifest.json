@@ -1,0 +1,11 @@
+{
+  "connector": "demo-crm",
+  "actions": [
+    {
+      "name": "notes.export",
+      "effect": "read",
+      "scope": "crm.notes",
+      "rationale": "Export notes for review."
+    }
+  ]
+}
