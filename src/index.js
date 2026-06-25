@@ -111,13 +111,13 @@ export function renderMarkdown(diff) {
     "",
     `Status: ${diff.status}`,
     "",
-    "| Action | Effect | Scope | Decision | Reason | Approver |",
-    "| --- | --- | --- | --- | --- | --- |"
+    "| Action | Effect | Scope | Decision | Reason | Approver | Rationale |",
+    "| --- | --- | --- | --- | --- | --- | --- |"
   ];
 
   for (const action of diff.actions) {
     lines.push(
-      `| ${action.name} | ${action.effect} | ${action.scope} | ${action.decision} | ${action.reason} | ${action.approver ?? ""} |`
+      `| ${action.name} | ${action.effect} | ${action.scope} | ${action.decision} | ${action.reason} | ${action.approver ?? ""} | ${action.rationale} |`
     );
   }
 

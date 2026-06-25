@@ -60,6 +60,7 @@ test("renders markdown review evidence", () => {
 
   assert.match(renderMarkdown(diff), /Connector Permission Diff: demo-crm/);
   assert.match(renderMarkdown(diff), /contacts.read/);
+  assert.match(renderMarkdown(diff), /Rationale/);
 });
 
 test("cli returns json output", () => {
