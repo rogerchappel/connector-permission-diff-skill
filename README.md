@@ -15,6 +15,8 @@ node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/ap
 
 ## Inputs
 
+See [docs/SCHEMA.md](docs/SCHEMA.md) for the full input shape.
+
 `manifest.actions` is the requested action surface:
 
 ```json
