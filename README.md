@@ -1,0 +1,55 @@
+# connector-permission-diff-skill
+
+Local-first agent skill and CLI for reviewing connector/action permission changes before an agent performs external work.
+
+The tool compares a proposed connector manifest with an approval policy and returns a dry-run diff: allowed actions, approval-required actions, denied actions, and reviewer evidence. It never calls external services.
+
+## Quickstart
+
+```bash
+npm test
+npm run smoke
+node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format json
+```
+
+## Inputs
+
+`manifest.actions` is the requested action surface:
+
+```json
+{
+  "connector": "demo-crm",
+  "actions": [
+    { "name": "contacts.read", "effect": "read", "scope": "crm.contacts" }
+  ]
+}
+```
+
+`policy.rules` defines the allowed surface. Unknown actions are denied by default.
+
+```json
+{
+  "connector": "demo-crm",
+  "rules": [
+    { "action": "contacts.read", "decision": "allow", "reason": "Read-only lookup." }
+  ]
+}
+```
+
+## Output
+
+- `allow`: action is inside policy and needs no additional approval
+- `needs_approval`: action is known but requires reviewer approval
+- `deny`: action is unknown or explicitly denied
+
+Markdown output is designed to paste into a release-candidate PR or approval thread.
+
+## Limitations
+
+- JSON files only in the MVP.
+- Policy matching is exact by action name.
+- The CLI does not execute connector actions or contact external accounts.
+
+## Safety Notes
+
+This package is dry-run only. Treat `needs_approval` and `deny` as blockers until a human reviewer approves or changes the policy in a separate review.

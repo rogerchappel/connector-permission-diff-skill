@@ -1,0 +1,33 @@
+{
+  "name": "connector-permission-diff-skill",
+  "version": "0.1.0",
+  "description": "Local-first connector permission diff skill for dry-run agent action reviews.",
+  "type": "module",
+  "bin": {
+    "connector-permission-diff": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/cli.js && node --check src/index.js",
+    "smoke": "node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format markdown",
+    "validate": "bash scripts/validate.sh"
+  },
+  "keywords": [
+    "agent-skill",
+    "connector",
+    "permissions",
+    "dry-run",
+    "approval"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src",
+    "docs",
+    "fixtures",
+    "SKILL.md",
+    "README.md"
+  ]
+}
