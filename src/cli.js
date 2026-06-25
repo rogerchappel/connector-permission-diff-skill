@@ -3,7 +3,8 @@ import { diffPermissions, readJsonFile, renderMarkdown } from "./index.js";
 
 function parseArgs(argv) {
   const args = {
-    format: "markdown"
+    format: "markdown",
+    failOnBlocked: false
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -11,6 +12,7 @@ function parseArgs(argv) {
     if (token === "--manifest") args.manifest = argv[++index];
     else if (token === "--policy") args.policy = argv[++index];
     else if (token === "--format") args.format = argv[++index];
+    else if (token === "--fail-on-blocked") args.failOnBlocked = true;
     else if (token === "--help" || token === "-h") args.help = true;
     else throw new Error(`Unknown argument: ${token}`);
   }
@@ -19,7 +21,7 @@ function parseArgs(argv) {
 }
 
 function usage() {
-  return `Usage: connector-permission-diff --manifest manifest.json --policy policy.json [--format markdown|json]
+  return `Usage: connector-permission-diff --manifest manifest.json --policy policy.json [--format markdown|json] [--fail-on-blocked]
 
 Compares requested connector actions against an approval policy. The command is read-only and dry-run only.
 `;
@@ -38,6 +40,9 @@ export function run(argv = process.argv.slice(2)) {
   }
 
   const diff = diffPermissions(readJsonFile(args.manifest), readJsonFile(args.policy));
+  if (args.failOnBlocked && diff.status === "blocked") {
+    process.exitCode = 2;
+  }
   return args.format === "json" ? `${JSON.stringify(diff, null, 2)}\n` : renderMarkdown(diff);
 }
 

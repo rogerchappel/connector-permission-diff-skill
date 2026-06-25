@@ -10,6 +10,7 @@ The tool compares a proposed connector manifest with an approval policy and retu
 npm test
 npm run smoke
 node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format json
+node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --fail-on-blocked
 ```
 
 ## Inputs
@@ -43,6 +44,8 @@ node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/ap
 - `deny`: action is unknown or explicitly denied
 
 Markdown output is designed to paste into a release-candidate PR or approval thread.
+
+Use `--fail-on-blocked` in CI when denied actions should fail the job with exit code `2`.
 
 ## Limitations
 
