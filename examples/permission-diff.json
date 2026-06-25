@@ -1,0 +1,38 @@
+{
+  "connector": "demo-crm",
+  "status": "blocked",
+  "summary": {
+    "allow": 1,
+    "needs_approval": 1,
+    "deny": 1
+  },
+  "actions": [
+    {
+      "name": "contacts.read",
+      "effect": "read",
+      "scope": "crm.contacts",
+      "rationale": "Look up account owner before drafting a follow-up.",
+      "decision": "allow",
+      "reason": "Read-only lookup is approved for CRM prep.",
+      "approver": null
+    },
+    {
+      "name": "deals.update",
+      "effect": "write",
+      "scope": "crm.deals",
+      "rationale": "Move a deal stage after a call.",
+      "decision": "needs_approval",
+      "reason": "Pipeline changes require account-owner approval.",
+      "approver": "account-owner"
+    },
+    {
+      "name": "contacts.delete",
+      "effect": "delete",
+      "scope": "crm.contacts",
+      "rationale": "Remove duplicate contacts.",
+      "decision": "deny",
+      "reason": "Destructive contact changes are out of scope.",
+      "approver": null
+    }
+  ]
+}
