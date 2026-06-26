@@ -13,7 +13,9 @@
     "test": "node --test",
     "check": "node --check src/cli.js && node --check src/index.js",
     "smoke": "node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format markdown",
-    "validate": "bash scripts/validate.sh"
+    "validate": "bash scripts/validate.sh",
+    "package:smoke": "npm pack --dry-run",
+    "release:check": "npm run validate && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
@@ -23,6 +25,14 @@
     "approval"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/connector-permission-diff-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/connector-permission-diff-skill/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/connector-permission-diff-skill#readme",
   "engines": {
     "node": ">=20"
   },
@@ -30,7 +40,9 @@
     "src",
     "docs",
     "fixtures",
+    "examples",
     "SKILL.md",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }
