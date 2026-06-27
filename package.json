@@ -15,7 +15,7 @@
     "smoke": "node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format markdown",
     "validate": "bash scripts/validate.sh",
     "package:smoke": "npm pack --dry-run",
-    "release:check": "npm run validate && npm run package:smoke"
+    "release:check": "npm run check && npm test && npm run smoke && npm run validate && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
