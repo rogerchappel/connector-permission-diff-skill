@@ -43,6 +43,8 @@
     "examples",
     "SKILL.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md",
+    "SECURITY.md"
   ]
 }
