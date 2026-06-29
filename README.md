@@ -7,11 +7,15 @@ The tool compares a proposed connector manifest with an approval policy and retu
 ## Quickstart
 
 ```bash
+npm install
+npx connector-permission-diff-skill --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json
 npm test
 npm run smoke
 node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format json
 node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --fail-on-blocked
 ```
+
+For local development, `node src/cli.js` and `npm run smoke` exercise the same CLI path that the published `connector-permission-diff` bin exposes.
 
 ## Inputs
 
