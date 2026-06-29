@@ -64,3 +64,18 @@ See [docs/API.md](docs/API.md) for library usage.
 ## Safety Notes
 
 This package is dry-run only. Treat `needs_approval` and `deny` as blockers until a human reviewer approves or changes the policy in a separate review.
+
+## Verification
+
+```bash
+npm run check
+npm test
+npm run smoke
+npm run validate
+npm run package:smoke
+npm run release:check
+```
+
+`npm run package:smoke` fails if the npm tarball would omit the CLI, library API,
+fixtures, examples, schema/API docs, skill instructions, license, security
+policy, or changelog.

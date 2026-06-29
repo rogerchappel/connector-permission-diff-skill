@@ -14,7 +14,7 @@
     "check": "node --check src/cli.js && node --check src/index.js",
     "smoke": "node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format markdown",
     "validate": "bash scripts/validate.sh",
-    "package:smoke": "npm pack --dry-run",
+    "package:smoke": "node scripts/package-smoke.js",
     "release:check": "npm run check && npm test && npm run smoke && npm run validate && npm run package:smoke"
   },
   "keywords": [
@@ -41,6 +41,7 @@
     "docs",
     "fixtures",
     "examples",
+    "scripts",
     "SKILL.md",
     "README.md",
     "LICENSE",
