@@ -12,10 +12,11 @@
   "scripts": {
     "test": "node --test",
     "check": "node --check src/cli.js && node --check src/index.js",
+    "lint": "npm run check",
     "smoke": "node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format markdown",
     "validate": "bash scripts/validate.sh",
     "package:smoke": "node scripts/package-smoke.js",
-    "release:check": "npm run check && npm test && npm run smoke && npm run validate && npm run package:smoke"
+    "release:check": "npm run lint && npm test && npm run smoke && npm run validate && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
