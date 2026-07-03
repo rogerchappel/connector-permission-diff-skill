@@ -68,6 +68,7 @@ This package is dry-run only. Treat `needs_approval` and `deny` as blockers unti
 ## Verification
 
 ```bash
+npm run lint
 npm run check
 npm run lint
 npm test
