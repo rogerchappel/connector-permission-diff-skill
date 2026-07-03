@@ -8,7 +8,7 @@ The tool compares a proposed connector manifest with an approval policy and retu
 
 ```bash
 npm install
-npx connector-permission-diff-skill --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json
+npx connector-permission-diff --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json
 npm test
 npm run smoke
 node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/approval-policy.json --format json
@@ -70,7 +70,6 @@ This package is dry-run only. Treat `needs_approval` and `deny` as blockers unti
 ```bash
 npm run lint
 npm run check
-npm run lint
 npm test
 npm run smoke
 npm run validate
