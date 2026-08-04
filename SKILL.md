@@ -6,7 +6,7 @@ Use this skill when an agent proposes connector or action permissions and a revi
 
 ## Required Inputs
 
-- Connector manifest JSON with `connector` and `actions`
+- Connector manifest JSON with `connector` and at least one entry in `actions`
 - Approval policy JSON with `connector` and `rules`
 - Optional output format: `json` or `markdown`
 
@@ -38,3 +38,5 @@ bash scripts/validate.sh
 ```
 
 Paste the Markdown report into the PR or handoff when connector permissions change.
+Markdown output escapes table delimiters and renders embedded value line breaks
+as `<br>` so user- and policy-provided values do not alter the table structure.
