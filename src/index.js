@@ -20,6 +20,9 @@ export function normalizeManifest(manifest) {
   if (!Array.isArray(manifest.actions)) {
     throw new Error("Manifest requires an actions array.");
   }
+  if (manifest.actions.length === 0) {
+    throw new Error("Manifest requires at least one action.");
+  }
 
   return {
     connector: manifest.connector,
@@ -117,7 +120,17 @@ export function renderMarkdown(diff) {
 
   for (const action of diff.actions) {
     lines.push(
-      `| ${action.name} | ${action.effect} | ${action.scope} | ${action.decision} | ${action.reason} | ${action.approver ?? ""} | ${action.rationale} |`
+      `| ${[
+        action.name,
+        action.effect,
+        action.scope,
+        action.decision,
+        action.reason,
+        action.approver,
+        action.rationale
+      ]
+        .map(escapeMarkdownCell)
+        .join(" | ")} |`
     );
   }
 
@@ -127,6 +140,12 @@ export function renderMarkdown(diff) {
   );
 
   return `${lines.join("\n")}\n`;
+}
+
+function escapeMarkdownCell(value) {
+  return String(value ?? "")
+    .replaceAll("|", "\\|")
+    .replace(/\r\n?|\n/g, "<br>");
 }
 
 function normalizeAction(action, index) {

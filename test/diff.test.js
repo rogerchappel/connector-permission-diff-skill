@@ -108,7 +108,7 @@ test("renders user and policy values without breaking markdown table cells", () 
     markdown,
     /\| contacts\\\|read<br>archived \| read\\\|export<br>preview \| crm\\\|contacts<br>archive \| needs_approval \| Archived\\\|records<br>need review\. \| records\\\|owner<br>on-call \| Investigate\\\|compare<br>without mutation\. \|/
   );
-  assert.equal(markdown.split("\n").filter((line) => line.startsWith("| ")).length, 2);
+  assert.equal(markdown.split("\n").filter((line) => line.startsWith("| ")).length, 3);
 });
 
 test("cli returns json output", () => {
