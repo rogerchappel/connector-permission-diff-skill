@@ -42,9 +42,23 @@ test("denies unknown actions by default", () => {
   assert.match(diff.actions[0].reason, /deny by default/);
 });
 
+test("rejects manifests with no actions", () => {
+  assert.throws(
+    () => diffPermissions({ connector: "demo-crm", actions: [] }, policy),
+    /Manifest requires at least one action\./
+  );
+});
+
 test("rejects connector mismatches", () => {
   assert.throws(
-    () => diffPermissions({ connector: "demo-mail", actions: [] }, policy),
+    () =>
+      diffPermissions(
+        {
+          connector: "demo-mail",
+          actions: [{ name: "messages.read", effect: "read", scope: "mail.messages" }]
+        },
+        policy
+      ),
     /Connector mismatch/
   );
 });
@@ -63,6 +77,40 @@ test("renders markdown review evidence", () => {
   assert.match(renderMarkdown(diff), /Rationale/);
 });
 
+test("renders user and policy values without breaking markdown table cells", () => {
+  const diff = diffPermissions(
+    {
+      connector: "demo-crm",
+      actions: [
+        {
+          name: "contacts|read\narchived",
+          effect: "read|export\npreview",
+          scope: "crm|contacts\narchive",
+          rationale: "Investigate|compare\nwithout mutation."
+        }
+      ]
+    },
+    {
+      connector: "demo-crm",
+      rules: [
+        {
+          action: "contacts|read\narchived",
+          decision: "needs_approval",
+          reason: "Archived|records\nneed review.",
+          approver: "records|owner\non-call"
+        }
+      ]
+    }
+  );
+
+  const markdown = renderMarkdown(diff);
+  assert.match(
+    markdown,
+    /\| contacts\\\|read<br>archived \| read\\\|export<br>preview \| crm\\\|contacts<br>archive \| needs_approval \| Archived\\\|records<br>need review\. \| records\\\|owner<br>on-call \| Investigate\\\|compare<br>without mutation\. \|/
+  );
+  assert.equal(markdown.split("\n").filter((line) => line.startsWith("| ")).length, 2);
+});
+
 test("cli returns json output", () => {
   const output = run([
     "--manifest",
@@ -74,4 +122,17 @@ test("cli returns json output", () => {
   ]);
 
   assert.equal(JSON.parse(output).summary.deny, 1);
+});
+
+test("cli rejects manifests with no actions", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/empty-manifest.json",
+        "--policy",
+        "fixtures/approval-policy.json"
+      ]),
+    /Manifest requires at least one action\./
+  );
 });
