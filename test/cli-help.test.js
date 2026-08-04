@@ -6,4 +6,6 @@ test('CLI help entrypoint prints usage', () => {
   const result = spawnSync(process.execPath, ['./src/cli.js', '--help'], { encoding: 'utf8' });
   assert.ok([0, 1, 2].includes(result.status), `unexpected exit status: ${result.status}`);
   assert.match(result.stdout + result.stderr, /Usage:/);
+  assert.match(result.stdout + result.stderr, /Empty action lists are rejected\./);
+  assert.match(result.stdout + result.stderr, /Markdown cell delimiters and line breaks are escaped\./);
 });

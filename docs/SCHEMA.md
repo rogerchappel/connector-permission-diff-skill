@@ -5,7 +5,7 @@
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `connector` | string | yes | Must match the policy connector. |
-| `actions` | array | yes | Requested connector actions. |
+| `actions` | non-empty array | yes | One or more requested connector actions. Empty arrays are rejected. |
 | `actions[].name` | string | yes | Exact action key. |
 | `actions[].effect` | string | yes | Typical values: `read`, `write`, `delete`, `send`, `publish`. |
 | `actions[].scope` | string | yes | Human-readable resource scope. |
@@ -23,5 +23,13 @@
 | `rules[].approver` | string | no | Human or role expected to approve. |
 
 Unknown actions are denied even when `defaultDecision` is omitted.
+
+An empty `actions` array is invalid rather than an allowed no-op. This prevents an
+empty permission diff from being interpreted as evidence that a request is allowed.
+
+In Markdown output, pipe delimiters in action and policy values are escaped as
+`\|`, and line breaks within those values are rendered as `<br>`. This keeps
+action name, effect, scope, reason, approver, and rationale values inside their
+intended table cells.
 
 See `fixtures/read-only-policy.json` for a stricter policy variant that blocks write actions.

@@ -21,7 +21,9 @@ For local development, `node src/cli.js` and `npm run smoke` exercise the same C
 
 See [docs/SCHEMA.md](docs/SCHEMA.md) for the full input shape.
 
-`manifest.actions` is the requested action surface:
+`manifest.actions` is the requested action surface and must contain at least one
+action. Empty action arrays are rejected so an empty diff cannot be reported as
+allowed:
 
 ```json
 {
@@ -49,7 +51,10 @@ See [docs/SCHEMA.md](docs/SCHEMA.md) for the full input shape.
 - `needs_approval`: action is known but requires reviewer approval
 - `deny`: action is unknown or explicitly denied
 
-Markdown output is designed to paste into a release-candidate PR or approval thread.
+Markdown output is designed to paste into a release-candidate PR or approval
+thread. Pipe delimiters in user- and policy-provided table values are escaped,
+and embedded line breaks are rendered as `<br>` so each value remains in its
+intended cell.
 
 Use `--fail-on-blocked` in CI when denied actions should fail the job with exit code `2`.
 
