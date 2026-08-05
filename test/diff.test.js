@@ -42,6 +42,40 @@ test("denies unknown actions by default", () => {
   assert.match(diff.actions[0].reason, /deny by default/);
 });
 
+test("rejects duplicate policy actions instead of using rule order", () => {
+  assert.throws(
+    () =>
+      diffPermissions(
+        {
+          connector: "demo-crm",
+          actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
+        },
+        {
+          connector: "demo-crm",
+          rules: [
+            { action: "contacts.read", decision: "deny" },
+            { action: "contacts.read", decision: "allow" }
+          ]
+        }
+      ),
+    /duplicate action "contacts\.read" at index 1\. Each action must appear once\./
+  );
+});
+
+test("rejects defaultDecision and explains the deny-by-default contract", () => {
+  assert.throws(
+    () =>
+      diffPermissions(
+        {
+          connector: "demo-crm",
+          actions: [{ name: "notes.export", effect: "read", scope: "crm.notes" }]
+        },
+        { connector: "demo-crm", defaultDecision: "allow", rules: [] }
+      ),
+    /defaultDecision is not supported; omit it\. Unknown actions are denied by default\./
+  );
+});
+
 test("rejects manifests with no actions", () => {
   assert.throws(
     () => diffPermissions({ connector: "demo-crm", actions: [] }, policy),
@@ -134,5 +168,31 @@ test("cli rejects manifests with no actions", () => {
         "fixtures/approval-policy.json"
       ]),
     /Manifest requires at least one action\./
+  );
+});
+
+test("cli rejects duplicate policy actions", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/connector-manifest.json",
+        "--policy",
+        "fixtures/duplicate-action-policy.json"
+      ]),
+    /duplicate action "contacts\.read" at index 1/
+  );
+});
+
+test("cli rejects unsupported defaultDecision", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/unknown-action-manifest.json",
+        "--policy",
+        "fixtures/default-decision-policy.json"
+      ]),
+    /defaultDecision is not supported/
   );
 });

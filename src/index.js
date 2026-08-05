@@ -40,14 +40,24 @@ export function normalizePolicy(policy) {
   if (!Array.isArray(policy.rules)) {
     throw new Error("Policy requires a rules array.");
   }
+  if (Object.hasOwn(policy, "defaultDecision")) {
+    throw new Error(
+      "Policy defaultDecision is not supported; omit it. Unknown actions are denied by default."
+    );
+  }
 
   const rules = new Map();
-  for (const rule of policy.rules) {
+  for (const [index, rule] of policy.rules.entries()) {
     if (!rule || typeof rule !== "object") {
       throw new Error("Policy rules must be objects.");
     }
     if (!rule.action || typeof rule.action !== "string") {
       throw new Error("Policy rule requires an action string.");
+    }
+    if (rules.has(rule.action)) {
+      throw new Error(
+        `Policy rules contain duplicate action ${JSON.stringify(rule.action)} at index ${index}. Each action must appear once.`
+      );
     }
     const decision = rule.decision ?? "deny";
     if (!VALID_DECISIONS.has(decision)) {
@@ -63,7 +73,6 @@ export function normalizePolicy(policy) {
 
   return {
     connector: policy.connector,
-    defaultDecision: policy.defaultDecision ?? "deny",
     rules
   };
 }

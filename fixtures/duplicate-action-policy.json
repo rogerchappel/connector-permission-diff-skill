@@ -1,0 +1,7 @@
+{
+  "connector": "demo-crm",
+  "rules": [
+    { "action": "contacts.read", "decision": "deny" },
+    { "action": "contacts.read", "decision": "allow" }
+  ]
+}
