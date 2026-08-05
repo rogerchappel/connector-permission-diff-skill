@@ -16,13 +16,19 @@
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `connector` | string | yes | Must match the manifest connector. |
-| `rules` | array | yes | Exact action rules. |
+| `rules` | array | yes | Exact action rules. Each action may appear only once. |
 | `rules[].action` | string | yes | Action name to match. |
 | `rules[].decision` | string | yes | `allow`, `needs_approval`, or `deny`. |
 | `rules[].reason` | string | no | Review explanation. |
 | `rules[].approver` | string | no | Human or role expected to approve. |
 
-Unknown actions are denied even when `defaultDecision` is omitted.
+Unknown actions are always denied. The `defaultDecision` field is unsupported
+and rejected so a policy cannot appear to change this safe default while being
+silently ignored. Omit the field from policy files.
+
+Duplicate `rules[].action` values are invalid. Normalization reports the
+duplicate action and its zero-based rule index instead of allowing later rules
+to overwrite earlier decisions.
 
 An empty `actions` array is invalid rather than an allowed no-op. This prevents an
 empty permission diff from being interpreted as evidence that a request is allowed.

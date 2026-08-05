@@ -34,7 +34,10 @@ allowed:
 }
 ```
 
-`policy.rules` defines the allowed surface. Unknown actions are denied by default.
+`policy.rules` defines the allowed surface. Each action may appear only once;
+duplicate action rules are rejected rather than resolved by ordering. Unknown
+actions are denied by default, and policies containing the unsupported
+`defaultDecision` field are rejected.
 
 ```json
 {
