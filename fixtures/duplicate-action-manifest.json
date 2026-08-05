@@ -1,0 +1,7 @@
+{
+  "connector": "demo-crm",
+  "actions": [
+    { "name": "contacts.read", "effect": "read", "scope": "crm.contacts" },
+    { "name": "contacts.read", "effect": "read", "scope": "crm.contacts.archive" }
+  ]
+}

@@ -24,10 +24,20 @@ export function normalizeManifest(manifest) {
     throw new Error("Manifest requires at least one action.");
   }
 
-  return {
-    connector: manifest.connector,
-    actions: manifest.actions.map((action, index) => normalizeAction(action, index))
-  };
+  const actions = [];
+  const actionNames = new Set();
+  for (const [index, action] of manifest.actions.entries()) {
+    const normalizedAction = normalizeAction(action, index);
+    if (actionNames.has(normalizedAction.name)) {
+      throw new Error(
+        `Manifest actions contain duplicate name ${JSON.stringify(normalizedAction.name)} at index ${index}. Each action name must appear once.`
+      );
+    }
+    actionNames.add(normalizedAction.name);
+    actions.push(normalizedAction);
+  }
+
+  return { connector: manifest.connector, actions };
 }
 
 export function normalizePolicy(policy) {
@@ -62,6 +72,11 @@ export function normalizePolicy(policy) {
     const decision = rule.decision ?? "deny";
     if (!VALID_DECISIONS.has(decision)) {
       throw new Error(`Policy rule ${rule.action} has invalid decision ${decision}.`);
+    }
+    for (const field of ["reason", "approver"]) {
+      if (Object.hasOwn(rule, field) && typeof rule[field] !== "string") {
+        throw new Error(`Policy rule ${index} ${field} must be a string when provided.`);
+      }
     }
     rules.set(rule.action, {
       action: rule.action,
@@ -165,6 +180,9 @@ function normalizeAction(action, index) {
     if (!action[field] || typeof action[field] !== "string") {
       throw new Error(`Manifest action ${index} requires ${field}.`);
     }
+  }
+  if (Object.hasOwn(action, "rationale") && typeof action.rationale !== "string") {
+    throw new Error(`Manifest action ${index} rationale must be a string when provided.`);
   }
   return {
     name: action.name,

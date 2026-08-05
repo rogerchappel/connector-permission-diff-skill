@@ -62,6 +62,80 @@ test("rejects duplicate policy actions instead of using rule order", () => {
   );
 });
 
+test("rejects duplicate manifest action names with the duplicate index", () => {
+  assert.throws(
+    () =>
+      diffPermissions(
+        {
+          connector: "demo-crm",
+          actions: [
+            { name: "contacts.read", effect: "read", scope: "crm.contacts" },
+            { name: "contacts.read", effect: "read", scope: "crm.contacts.archive" }
+          ]
+        },
+        policy
+      ),
+    /duplicate name "contacts\.read" at index 1\. Each action name must appear once\./
+  );
+});
+
+test("rejects non-string optional manifest rationale", () => {
+  assert.throws(
+    () =>
+      diffPermissions(
+        {
+          connector: "demo-crm",
+          actions: [
+            {
+              name: "contacts.read",
+              effect: "read",
+              scope: "crm.contacts",
+              rationale: { unexpected: true }
+            }
+          ]
+        },
+        policy
+      ),
+    /Manifest action 0 rationale must be a string when provided\./
+  );
+});
+
+test("rejects non-string optional policy reason and approver values", () => {
+  for (const [field, value] of [
+    ["reason", { unexpected: true }],
+    ["approver", ["owner"]]
+  ]) {
+    assert.throws(
+      () =>
+        diffPermissions(
+          {
+            connector: "demo-crm",
+            actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
+          },
+          {
+            connector: "demo-crm",
+            rules: [{ action: "contacts.read", decision: "allow", [field]: value }]
+          }
+        ),
+      new RegExp(`Policy rule 0 ${field} must be a string when provided\\.`)
+    );
+  }
+});
+
+test("preserves defaults when optional fields are omitted", () => {
+  const diff = diffPermissions(
+    {
+      connector: "demo-crm",
+      actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
+    },
+    { connector: "demo-crm", rules: [{ action: "contacts.read", decision: "allow" }] }
+  );
+
+  assert.equal(diff.actions[0].rationale, "");
+  assert.equal(diff.actions[0].reason, "No reason provided.");
+  assert.equal(diff.actions[0].approver, null);
+});
+
 test("rejects defaultDecision and explains the deny-by-default contract", () => {
   assert.throws(
     () =>
@@ -181,6 +255,42 @@ test("cli rejects duplicate policy actions", () => {
         "fixtures/duplicate-action-policy.json"
       ]),
     /duplicate action "contacts\.read" at index 1/
+  );
+});
+
+test("cli rejects duplicate manifest action names", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/duplicate-action-manifest.json",
+        "--policy",
+        "fixtures/approval-policy.json"
+      ]),
+    /duplicate name "contacts\.read" at index 1/
+  );
+});
+
+test("cli rejects invalid optional-field types", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/invalid-rationale-manifest.json",
+        "--policy",
+        "fixtures/approval-policy.json"
+      ]),
+    /Manifest action 0 rationale must be a string when provided/
+  );
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/connector-manifest.json",
+        "--policy",
+        "fixtures/invalid-optional-fields-policy.json"
+      ]),
+    /Policy rule 0 reason must be a string when provided/
   );
 });
 

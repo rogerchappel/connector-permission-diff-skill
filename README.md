@@ -22,8 +22,8 @@ For local development, `node src/cli.js` and `npm run smoke` exercise the same C
 See [docs/SCHEMA.md](docs/SCHEMA.md) for the full input shape.
 
 `manifest.actions` is the requested action surface and must contain at least one
-action. Empty action arrays are rejected so an empty diff cannot be reported as
-allowed:
+uniquely named action. Empty arrays and duplicate action names are rejected so
+an empty or double-counted diff cannot be reported as valid:
 
 ```json
 {
@@ -38,6 +38,10 @@ allowed:
 duplicate action rules are rejected rather than resolved by ordering. Unknown
 actions are denied by default, and policies containing the unsupported
 `defaultDecision` field are rejected.
+
+Optional manifest `rationale` and policy `reason`/`approver` fields must be
+strings when present. Their omission remains supported and uses the documented
+normalization defaults; invalid types are rejected with an indexed error.
 
 ```json
 {

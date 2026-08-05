@@ -11,10 +11,17 @@ console.log(renderMarkdown(diff));
 
 The manifest must request at least one action. The function throws
 `Manifest requires at least one action.` for an empty `manifest.actions` array.
+Duplicate `actions[].name` values are rejected with the zero-based duplicate
+action index.
 
 Policy normalization rejects duplicate `rules[].action` values with the
 duplicate rule index. It also rejects any `defaultDecision` field: unmatched
 actions have a fixed `deny` decision, so callers must omit that field.
+
+Optional `actions[].rationale`, `rules[].reason`, and `rules[].approver` values
+must be strings when present. Errors identify the zero-based action or rule
+index. When omitted, they continue to normalize to `""`,
+`"No reason provided."`, and `null`, respectively.
 
 Returns:
 

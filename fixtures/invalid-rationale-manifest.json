@@ -1,0 +1,11 @@
+{
+  "connector": "demo-crm",
+  "actions": [
+    {
+      "name": "contacts.read",
+      "effect": "read",
+      "scope": "crm.contacts",
+      "rationale": { "unexpected": true }
+    }
+  ]
+}

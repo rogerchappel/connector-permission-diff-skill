@@ -6,10 +6,10 @@
 | --- | --- | --- | --- |
 | `connector` | string | yes | Must match the policy connector. |
 | `actions` | non-empty array | yes | One or more requested connector actions. Empty arrays are rejected. |
-| `actions[].name` | string | yes | Exact action key. |
+| `actions[].name` | string | yes | Exact action key. Each name may appear only once. |
 | `actions[].effect` | string | yes | Typical values: `read`, `write`, `delete`, `send`, `publish`. |
 | `actions[].scope` | string | yes | Human-readable resource scope. |
-| `actions[].rationale` | string | no | Why the agent requested the action. |
+| `actions[].rationale` | string | no | Why the agent requested the action. If omitted, normalizes to an empty string. |
 
 ## Policy
 
@@ -19,8 +19,8 @@
 | `rules` | array | yes | Exact action rules. Each action may appear only once. |
 | `rules[].action` | string | yes | Action name to match. |
 | `rules[].decision` | string | yes | `allow`, `needs_approval`, or `deny`. |
-| `rules[].reason` | string | no | Review explanation. |
-| `rules[].approver` | string | no | Human or role expected to approve. |
+| `rules[].reason` | string | no | Review explanation. If omitted, normalizes to `No reason provided.` |
+| `rules[].approver` | string | no | Human or role expected to approve. If omitted, normalizes to `null`. |
 
 Unknown actions are always denied. The `defaultDecision` field is unsupported
 and rejected so a policy cannot appear to change this safe default while being
@@ -29,6 +29,15 @@ silently ignored. Omit the field from policy files.
 Duplicate `rules[].action` values are invalid. Normalization reports the
 duplicate action and its zero-based rule index instead of allowing later rules
 to overwrite earlier decisions.
+
+Duplicate `actions[].name` values are also invalid. Normalization reports the
+duplicate name and its zero-based manifest action index so review counts cannot
+include indistinguishable rows.
+
+When present, `actions[].rationale`, `rules[].reason`, and `rules[].approver`
+must be strings; objects, arrays, numbers, booleans, and `null` are rejected
+with the zero-based action or rule index. Omitting these optional fields keeps
+the defaults documented in the tables above.
 
 An empty `actions` array is invalid rather than an allowed no-op. This prevents an
 empty permission diff from being interpreted as evidence that a request is allowed.
