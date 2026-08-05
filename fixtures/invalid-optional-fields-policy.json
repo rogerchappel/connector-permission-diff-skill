@@ -1,0 +1,11 @@
+{
+  "connector": "demo-crm",
+  "rules": [
+    {
+      "action": "contacts.read",
+      "decision": "allow",
+      "reason": { "unexpected": true },
+      "approver": ["owner"]
+    }
+  ]
+}
