@@ -14,6 +14,11 @@ The manifest must request at least one action. The function throws
 Duplicate `actions[].name` values are rejected with the zero-based duplicate
 action index.
 
+Manifest and policy connectors, manifest action names, effects, and scopes,
+and policy rule actions must be non-blank strings. Errors identify the field
+and the zero-based action or rule index where applicable. Valid strings are
+not trimmed; connector and action matching remains exact.
+
 Policy normalization rejects duplicate `rules[].action` values with the
 duplicate rule index. It also rejects any `defaultDecision` field: unmatched
 actions have a fixed `deny` decision, so callers must omit that field.

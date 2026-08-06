@@ -24,6 +24,7 @@ function usage() {
   return `Usage: connector-permission-diff --manifest manifest.json --policy policy.json [--format markdown|json] [--fail-on-blocked]
 
 Compares one or more requested connector actions against an approval policy. Empty action lists are rejected.
+Blank required strings are rejected.
 The command is read-only and dry-run only. Markdown cell delimiters and line breaks are escaped.
 `;
 }

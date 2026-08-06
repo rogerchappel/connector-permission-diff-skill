@@ -9,6 +9,7 @@ The package follows a dry-run-only safety model.
 - Does not import connector SDKs.
 - Does not perform network requests.
 - Denies unknown actions by default.
+- Rejects blank connector, action, effect, and scope identifiers before policy matching.
 
 ## Reviewer Guidance
 
