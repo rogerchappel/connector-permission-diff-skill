@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 import { diffPermissions, renderMarkdown } from "../src/index.js";
 import { run } from "../src/cli.js";
@@ -10,6 +13,11 @@ const policy = {
     { action: "deals.update", decision: "needs_approval", reason: "Owner approval.", approver: "owner" },
     { action: "contacts.delete", decision: "deny", reason: "Destructive." }
   ]
+};
+
+const manifest = {
+  connector: "demo-crm",
+  actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
 };
 
 test("classifies allow, approval-required, and denied actions", () => {
@@ -155,6 +163,52 @@ test("rejects manifests with no actions", () => {
     () => diffPermissions({ connector: "demo-crm", actions: [] }, policy),
     /Manifest requires at least one action\./
   );
+});
+
+test("rejects every blank required manifest and policy string with its field and index", () => {
+  const cases = [
+    {
+      update: (candidateManifest) => (candidateManifest.connector = " \t "),
+      error: /Manifest connector must be a non-blank string\./
+    },
+    ...["name", "effect", "scope"].map((field) => ({
+      update: (candidateManifest) => (candidateManifest.actions[0][field] = " \n "),
+      error: new RegExp(`Manifest action 0 ${field} must be a non-blank string\\.`)
+    })),
+    {
+      update: (_candidateManifest, candidatePolicy) => (candidatePolicy.connector = "   "),
+      error: /Policy connector must be a non-blank string\./
+    },
+    {
+      update: (_candidateManifest, candidatePolicy) => (candidatePolicy.rules[0].action = "\t"),
+      error: /Policy rule 0 action must be a non-blank string\./
+    }
+  ];
+
+  for (const { update, error } of cases) {
+    const candidateManifest = structuredClone(manifest);
+    const candidatePolicy = structuredClone(policy);
+    update(candidateManifest, candidatePolicy);
+    assert.throws(() => diffPermissions(candidateManifest, candidatePolicy), error);
+  }
+});
+
+test("preserves whitespace in valid required strings", () => {
+  const paddedManifest = {
+    connector: " demo-crm ",
+    actions: [{ name: " contacts.read ", effect: " read ", scope: " crm.contacts " }]
+  };
+  const paddedPolicy = {
+    connector: " demo-crm ",
+    rules: [{ action: " contacts.read ", decision: "allow" }]
+  };
+
+  const diff = diffPermissions(paddedManifest, paddedPolicy);
+  assert.equal(diff.connector, " demo-crm ");
+  assert.equal(diff.actions[0].name, " contacts.read ");
+  assert.equal(diff.actions[0].effect, " read ");
+  assert.equal(diff.actions[0].scope, " crm.contacts ");
+  assert.equal(diff.actions[0].decision, "allow");
 });
 
 test("rejects connector mismatches", () => {
@@ -304,5 +358,52 @@ test("cli rejects unsupported defaultDecision", () => {
         "fixtures/default-decision-policy.json"
       ]),
     /defaultDecision is not supported/
+  );
+});
+
+test("cli rejects every blank required manifest and policy string", (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "permission-diff-blank-"));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const cases = [
+    [(candidateManifest) => (candidateManifest.connector = "   "), /Manifest connector/],
+    ...["name", "effect", "scope"].map((field) => [
+      (candidateManifest) => (candidateManifest.actions[0][field] = "\t"),
+      new RegExp(`Manifest action 0 ${field}`)
+    ]),
+    [
+      (_candidateManifest, candidatePolicy) => (candidatePolicy.connector = "\n"),
+      /Policy connector/
+    ],
+    [
+      (_candidateManifest, candidatePolicy) => (candidatePolicy.rules[0].action = "   "),
+      /Policy rule 0 action/
+    ]
+  ];
+
+  for (const [index, [update, error]] of cases.entries()) {
+    const candidateManifest = structuredClone(manifest);
+    const candidatePolicy = structuredClone(policy);
+    update(candidateManifest, candidatePolicy);
+    const manifestPath = path.join(directory, `manifest-${index}.json`);
+    const policyPath = path.join(directory, `policy-${index}.json`);
+    fs.writeFileSync(manifestPath, JSON.stringify(candidateManifest));
+    fs.writeFileSync(policyPath, JSON.stringify(candidatePolicy));
+
+    assert.throws(
+      () => run(["--manifest", manifestPath, "--policy", policyPath]),
+      error
+    );
+  }
+});
+
+test("a blank action can never match an allow rule", () => {
+  assert.throws(
+    () =>
+      diffPermissions(
+        { connector: "demo-crm", actions: [{ name: " ", effect: "read", scope: "crm" }] },
+        { connector: "demo-crm", rules: [{ action: " ", decision: "allow" }] }
+      ),
+    /Manifest action 0 name must be a non-blank string\./
   );
 });

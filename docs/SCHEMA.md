@@ -4,20 +4,20 @@
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `connector` | string | yes | Must match the policy connector. |
+| `connector` | non-blank string | yes | Must match the policy connector exactly. |
 | `actions` | non-empty array | yes | One or more requested connector actions. Empty arrays are rejected. |
-| `actions[].name` | string | yes | Exact action key. Each name may appear only once. |
-| `actions[].effect` | string | yes | Typical values: `read`, `write`, `delete`, `send`, `publish`. |
-| `actions[].scope` | string | yes | Human-readable resource scope. |
+| `actions[].name` | non-blank string | yes | Exact action key. Each name may appear only once. |
+| `actions[].effect` | non-blank string | yes | Typical values: `read`, `write`, `delete`, `send`, `publish`. |
+| `actions[].scope` | non-blank string | yes | Human-readable resource scope. |
 | `actions[].rationale` | string | no | Why the agent requested the action. If omitted, normalizes to an empty string. |
 
 ## Policy
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `connector` | string | yes | Must match the manifest connector. |
+| `connector` | non-blank string | yes | Must match the manifest connector exactly. |
 | `rules` | array | yes | Exact action rules. Each action may appear only once. |
-| `rules[].action` | string | yes | Action name to match. |
+| `rules[].action` | non-blank string | yes | Action name to match exactly. |
 | `rules[].decision` | string | yes | `allow`, `needs_approval`, or `deny`. |
 | `rules[].reason` | string | no | Review explanation. If omitted, normalizes to `No reason provided.` |
 | `rules[].approver` | string | no | Human or role expected to approve. If omitted, normalizes to `null`. |
@@ -25,6 +25,10 @@
 Unknown actions are always denied. The `defaultDecision` field is unsupported
 and rejected so a policy cannot appear to change this safe default while being
 silently ignored. Omit the field from policy files.
+
+Required string fields reject empty values and values containing only
+whitespace. Valid values are preserved exactly: validation does not trim them,
+and connector and action matching remains exact.
 
 Duplicate `rules[].action` values are invalid. Normalization reports the
 duplicate action and its zero-based rule index instead of allowing later rules
