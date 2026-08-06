@@ -14,8 +14,8 @@ export function normalizeManifest(manifest) {
   if (!manifest || typeof manifest !== "object") {
     throw new Error("Manifest must be a JSON object.");
   }
-  if (!manifest.connector || typeof manifest.connector !== "string") {
-    throw new Error("Manifest requires a connector string.");
+  if (!isNonBlankString(manifest.connector)) {
+    throw new Error("Manifest connector must be a non-blank string.");
   }
   if (!Array.isArray(manifest.actions)) {
     throw new Error("Manifest requires an actions array.");
@@ -44,8 +44,8 @@ export function normalizePolicy(policy) {
   if (!policy || typeof policy !== "object") {
     throw new Error("Policy must be a JSON object.");
   }
-  if (!policy.connector || typeof policy.connector !== "string") {
-    throw new Error("Policy requires a connector string.");
+  if (!isNonBlankString(policy.connector)) {
+    throw new Error("Policy connector must be a non-blank string.");
   }
   if (!Array.isArray(policy.rules)) {
     throw new Error("Policy requires a rules array.");
@@ -61,8 +61,8 @@ export function normalizePolicy(policy) {
     if (!rule || typeof rule !== "object") {
       throw new Error("Policy rules must be objects.");
     }
-    if (!rule.action || typeof rule.action !== "string") {
-      throw new Error("Policy rule requires an action string.");
+    if (!isNonBlankString(rule.action)) {
+      throw new Error(`Policy rule ${index} action must be a non-blank string.`);
     }
     if (rules.has(rule.action)) {
       throw new Error(
@@ -177,8 +177,8 @@ function normalizeAction(action, index) {
     throw new Error(`Manifest action ${index} must be an object.`);
   }
   for (const field of ["name", "effect", "scope"]) {
-    if (!action[field] || typeof action[field] !== "string") {
-      throw new Error(`Manifest action ${index} requires ${field}.`);
+    if (!isNonBlankString(action[field])) {
+      throw new Error(`Manifest action ${index} ${field} must be a non-blank string.`);
     }
   }
   if (Object.hasOwn(action, "rationale") && typeof action.rationale !== "string") {
@@ -190,4 +190,8 @@ function normalizeAction(action, index) {
     scope: action.scope,
     rationale: action.rationale ?? ""
   };
+}
+
+function isNonBlankString(value) {
+  return typeof value === "string" && value.trim().length > 0;
 }
