@@ -70,6 +70,17 @@ test("rejects duplicate policy actions instead of using rule order", () => {
   );
 });
 
+test("rejects policy rules that omit a decision", () => {
+  assert.throws(
+    () =>
+      diffPermissions(manifest, {
+        connector: "demo-crm",
+        rules: [{ action: "contacts.read", reason: "Read-only." }]
+      }),
+    /Policy rule 0 action "contacts\.read" decision is required\./
+  );
+});
+
 test("rejects duplicate manifest action names with the duplicate index", () => {
   assert.throws(
     () =>
@@ -309,6 +320,19 @@ test("cli rejects duplicate policy actions", () => {
         "fixtures/duplicate-action-policy.json"
       ]),
     /duplicate action "contacts\.read" at index 1/
+  );
+});
+
+test("cli rejects policy rules that omit a decision", () => {
+  assert.throws(
+    () =>
+      run([
+        "--manifest",
+        "fixtures/connector-manifest.json",
+        "--policy",
+        "fixtures/missing-decision-policy.json"
+      ]),
+    /Policy rule 0 action "contacts\.read" decision is required\./
   );
 });
 
