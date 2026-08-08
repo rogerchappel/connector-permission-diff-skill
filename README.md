@@ -37,7 +37,9 @@ an empty or double-counted diff cannot be reported as valid:
 `policy.rules` defines the allowed surface. Each action may appear only once;
 duplicate action rules are rejected rather than resolved by ordering. Unknown
 actions are denied by default, and policies containing the unsupported
-`defaultDecision` field are rejected.
+`defaultDecision` field are rejected. Every listed rule must explicitly set
+`decision` to `allow`, `needs_approval`, or `deny`; only actions without a
+matching rule receive the deny-by-default behavior.
 
 Optional manifest `rationale` and policy `reason`/`approver` fields must be
 strings when present. Their omission remains supported and uses the documented

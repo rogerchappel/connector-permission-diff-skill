@@ -25,6 +25,7 @@ function usage() {
 
 Compares one or more requested connector actions against an approval policy. Empty action lists are rejected.
 Blank required strings are rejected.
+Every policy rule requires an explicit allow, needs_approval, or deny decision.
 The command is read-only and dry-run only. Markdown cell delimiters and line breaks are escaped.
 `;
 }

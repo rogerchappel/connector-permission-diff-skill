@@ -69,7 +69,12 @@ export function normalizePolicy(policy) {
         `Policy rules contain duplicate action ${JSON.stringify(rule.action)} at index ${index}. Each action must appear once.`
       );
     }
-    const decision = rule.decision ?? "deny";
+    if (!Object.hasOwn(rule, "decision")) {
+      throw new Error(
+        `Policy rule ${index} action ${JSON.stringify(rule.action)} decision is required.`
+      );
+    }
+    const decision = rule.decision;
     if (!VALID_DECISIONS.has(decision)) {
       throw new Error(`Policy rule ${rule.action} has invalid decision ${decision}.`);
     }

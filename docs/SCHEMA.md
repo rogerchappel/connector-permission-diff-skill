@@ -26,6 +26,10 @@ Unknown actions are always denied. The `defaultDecision` field is unsupported
 and rejected so a policy cannot appear to change this safe default while being
 silently ignored. Omit the field from policy files.
 
+Every listed policy rule must explicitly provide `decision`. Omitting it is a
+validation error that identifies the zero-based rule index and action name;
+deny by default applies only when an action has no matching rule.
+
 Required string fields reject empty values and values containing only
 whitespace. Valid values are preserved exactly: validation does not trim them,
 and connector and action matching remains exact.

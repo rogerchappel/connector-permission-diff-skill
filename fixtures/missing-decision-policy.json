@@ -1,0 +1,9 @@
+{
+  "connector": "demo-crm",
+  "rules": [
+    {
+      "action": "contacts.read",
+      "reason": "Read-only lookup."
+    }
+  ]
+}

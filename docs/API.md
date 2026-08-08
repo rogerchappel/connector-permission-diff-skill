@@ -22,6 +22,8 @@ not trimmed; connector and action matching remains exact.
 Policy normalization rejects duplicate `rules[].action` values with the
 duplicate rule index. It also rejects any `defaultDecision` field: unmatched
 actions have a fixed `deny` decision, so callers must omit that field.
+Each listed rule must provide a `decision`; omission is rejected with the
+zero-based rule index and action name rather than normalized to `deny`.
 
 Optional `actions[].rationale`, `rules[].reason`, and `rules[].approver` values
 must be strings when present. Errors identify the zero-based action or rule
