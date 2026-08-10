@@ -17,6 +17,11 @@ node src/cli.js --manifest fixtures/connector-manifest.json --policy fixtures/ap
 
 For local development, `node src/cli.js` and `npm run smoke` exercise the same CLI path that the published `connector-permission-diff` bin exposes.
 
+`--manifest`, `--policy`, and `--format` each accept exactly one value and may
+appear in any order. Each may be specified only once, and its value must follow
+immediately rather than being omitted or replaced by another option token.
+Standalone `--help` (or `-h`) prints usage and exits successfully.
+
 ## Inputs
 
 See [docs/SCHEMA.md](docs/SCHEMA.md) for the full input shape.
