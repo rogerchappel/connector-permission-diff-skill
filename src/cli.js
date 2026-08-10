@@ -6,12 +6,27 @@ function parseArgs(argv) {
     format: "markdown",
     failOnBlocked: false
   };
+  const seenValueOptions = new Set();
+
+  const readValue = (option, index) => {
+    if (seenValueOptions.has(option)) {
+      throw new Error(`${option} may only be specified once.`);
+    }
+
+    const value = argv[index + 1];
+    if (value === undefined || value.startsWith("-")) {
+      throw new Error(`${option} requires a value.`);
+    }
+
+    seenValueOptions.add(option);
+    return value;
+  };
 
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
-    if (token === "--manifest") args.manifest = argv[++index];
-    else if (token === "--policy") args.policy = argv[++index];
-    else if (token === "--format") args.format = argv[++index];
+    if (token === "--manifest") args.manifest = readValue(token, index++);
+    else if (token === "--policy") args.policy = readValue(token, index++);
+    else if (token === "--format") args.format = readValue(token, index++);
     else if (token === "--fail-on-blocked") args.failOnBlocked = true;
     else if (token === "--help" || token === "-h") args.help = true;
     else throw new Error(`Unknown argument: ${token}`);
@@ -26,6 +41,7 @@ function usage() {
 Compares one or more requested connector actions against an approval policy. Empty action lists are rejected.
 Blank required strings are rejected.
 Every policy rule requires an explicit allow, needs_approval, or deny decision.
+Value options must be provided once and followed by a value, not another option.
 The command is read-only and dry-run only. Markdown cell delimiters and line breaks are escaped.
 `;
 }
