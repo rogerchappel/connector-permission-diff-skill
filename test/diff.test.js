@@ -297,6 +297,33 @@ test("cli returns json output", () => {
   assert.equal(JSON.parse(output).summary.deny, 1);
 });
 
+test("cli accepts value options in supported orders", () => {
+  const output = run([
+    "--format",
+    "json",
+    "--policy",
+    "fixtures/approval-policy.json",
+    "--manifest",
+    "fixtures/connector-manifest.json"
+  ]);
+
+  assert.equal(JSON.parse(output).summary.deny, 1);
+});
+
+test("cli rejects repeated value options", () => {
+  for (const option of ["--manifest", "--policy", "--format"]) {
+    const value = option === "--format" ? "json" : "fixtures/connector-manifest.json";
+    assert.throws(() => run([option, value, option, value]), new RegExp(`${option} may only be specified once\\.`));
+  }
+});
+
+test("cli rejects missing values and option tokens used as values", () => {
+  for (const option of ["--manifest", "--policy", "--format"]) {
+    assert.throws(() => run([option]), new RegExp(`${option} requires a value\\.`));
+    assert.throws(() => run([option, "--help"]), new RegExp(`${option} requires a value\\.`));
+  }
+});
+
 test("cli rejects manifests with no actions", () => {
   assert.throws(
     () =>
