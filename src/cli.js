@@ -2,6 +2,11 @@
 import { diffPermissions, readJsonFile, renderMarkdown } from "./index.js";
 
 function parseArgs(argv) {
+  const hasHelp = argv.includes("--help") || argv.includes("-h");
+  if (hasHelp && argv.length !== 1) {
+    throw new Error("--help and -h must be used alone.");
+  }
+
   const args = {
     format: "markdown",
     failOnBlocked: false

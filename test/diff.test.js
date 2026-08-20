@@ -336,7 +336,7 @@ test("cli rejects repeated value options", () => {
 test("cli rejects missing values and option tokens used as values", () => {
   for (const option of ["--manifest", "--policy", "--format"]) {
     assert.throws(() => run([option]), new RegExp(`${option} requires a value\\.`));
-    assert.throws(() => run([option, "--help"]), new RegExp(`${option} requires a value\\.`));
+    assert.throws(() => run([option, "--fail-on-blocked"]), new RegExp(`${option} requires a value\\.`));
   }
 });
 
