@@ -310,6 +310,22 @@ test("cli accepts value options in supported orders", () => {
   assert.equal(JSON.parse(output).summary.deny, 1);
 });
 
+test("cli accepts help only when it is the sole argument", () => {
+  for (const option of ["--help", "-h"]) {
+    assert.match(run([option]), /^Usage:/);
+  }
+
+  const mixedHelp = [
+    ["--help", "--manifest", "fixtures/connector-manifest.json"],
+    ["--policy", "fixtures/approval-policy.json", "-h"],
+    ["--format", "json", "--help"],
+    ["--fail-on-blocked", "--help"]
+  ];
+  for (const args of mixedHelp) {
+    assert.throws(() => run(args), /--help and -h must be used alone\./);
+  }
+});
+
 test("cli rejects repeated value options", () => {
   for (const option of ["--manifest", "--policy", "--format"]) {
     const value = option === "--format" ? "json" : "fixtures/connector-manifest.json";
@@ -320,7 +336,7 @@ test("cli rejects repeated value options", () => {
 test("cli rejects missing values and option tokens used as values", () => {
   for (const option of ["--manifest", "--policy", "--format"]) {
     assert.throws(() => run([option]), new RegExp(`${option} requires a value\\.`));
-    assert.throws(() => run([option, "--help"]), new RegExp(`${option} requires a value\\.`));
+    assert.throws(() => run([option, "--fail-on-blocked"]), new RegExp(`${option} requires a value\\.`));
   }
 });
 

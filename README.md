@@ -20,7 +20,9 @@ For local development, `node src/cli.js` and `npm run smoke` exercise the same C
 `--manifest`, `--policy`, and `--format` each accept exactly one value and may
 appear in any order. Each may be specified only once, and its value must follow
 immediately rather than being omitted or replaced by another option token.
-Standalone `--help` (or `-h`) prints usage and exits successfully.
+Standalone `--help` (or `-h`) prints usage and exits successfully. Combining
+either help flag with any other argument is an error; the CLI does not read the
+manifest or policy or produce a diff in that case.
 
 ## Inputs
 

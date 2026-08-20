@@ -2,6 +2,11 @@
 import { diffPermissions, readJsonFile, renderMarkdown } from "./index.js";
 
 function parseArgs(argv) {
+  const hasHelp = argv.includes("--help") || argv.includes("-h");
+  if (hasHelp && argv.length !== 1) {
+    throw new Error("--help and -h must be used alone.");
+  }
+
   const args = {
     format: "markdown",
     failOnBlocked: false
@@ -42,6 +47,7 @@ Compares one or more requested connector actions against an approval policy. Emp
 Blank required strings are rejected.
 Every policy rule requires an explicit allow, needs_approval, or deny decision.
 Value options must be provided once and followed by a value, not another option.
+Help flags must be used alone.
 The command is read-only and dry-run only. Markdown cell delimiters and line breaks are escaped.
 `;
 }
