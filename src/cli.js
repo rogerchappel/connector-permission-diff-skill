@@ -47,6 +47,7 @@ Compares one or more requested connector actions against an approval policy. Emp
 Blank required strings are rejected.
 Every policy rule requires an explicit allow, needs_approval, or deny decision.
 Value options must be provided once and followed by a value, not another option.
+Help flags must be used alone.
 The command is read-only and dry-run only. Markdown cell delimiters and line breaks are escaped.
 `;
 }
