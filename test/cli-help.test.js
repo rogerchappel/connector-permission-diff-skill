@@ -16,7 +16,9 @@ test('CLI entrypoint reports argument errors without internal stacks', () => {
   const cases = [
     [['--manifest'], '--manifest requires a value.'],
     [['--policy', '--format', 'json'], '--policy requires a value.'],
-    [['--format', 'json', '--format', 'markdown'], '--format may only be specified once.']
+    [['--format', 'json', '--format', 'markdown'], '--format may only be specified once.'],
+    [['--help', '--manifest', 'fixtures/connector-manifest.json'], '--help and -h must be used alone.'],
+    [['--policy', 'fixtures/approval-policy.json', '-h'], '--help and -h must be used alone.']
   ];
 
   for (const [args, message] of cases) {
