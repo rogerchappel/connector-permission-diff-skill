@@ -34,6 +34,10 @@ Required string fields reject empty values and values containing only
 whitespace. Valid values are preserved exactly: validation does not trim them,
 and connector and action matching remains exact.
 
+Connector identifiers may contain embedded CR, LF, or CRLF line breaks. In
+Markdown output, those line breaks render as `<br>` so the complete identifier
+remains within the single report heading rather than starting a new block.
+
 Duplicate `rules[].action` values are invalid. Normalization reports the
 duplicate action and its zero-based rule index instead of allowing later rules
 to overwrite earlier decisions.
@@ -50,7 +54,7 @@ the defaults documented in the tables above.
 An empty `actions` array is invalid rather than an allowed no-op. This prevents an
 empty permission diff from being interpreted as evidence that a request is allowed.
 
-In Markdown output, pipe delimiters in action and policy values are escaped as
+In Markdown output, pipe delimiters in action and policy table values are escaped as
 `\|`, and line breaks within those values are rendered as `<br>`. This keeps
 action name, effect, scope, reason, approver, and rationale values inside their
 intended table cells.

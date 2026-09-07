@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Keep accepted multiline connector identifiers within one Markdown heading by
+  rendering embedded CR, LF, and CRLF line breaks as `<br>`.
 - Add release-readiness checks for package metadata, pack contents, and CI verification.
 - Reject empty action manifests instead of reporting an empty diff as allowed.
 - Preserve Markdown table structure when action or policy values contain pipes or line breaks.
