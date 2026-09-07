@@ -68,9 +68,10 @@ normalization defaults; invalid types are rejected with an indexed error.
 - `deny`: action is unknown or explicitly denied
 
 Markdown output is designed to paste into a release-candidate PR or approval
-thread. Pipe delimiters in user- and policy-provided table values are escaped,
-and embedded line breaks are rendered as `<br>` so each value remains in its
-intended cell.
+thread. Embedded line breaks in connector identifiers are rendered as `<br>`
+so the identifier remains on the report heading line. Pipe delimiters in
+user- and policy-provided table values are escaped, and their embedded line
+breaks are also rendered as `<br>` so each value remains in its intended cell.
 
 Use `--fail-on-blocked` in CI when denied actions should fail the job with exit code `2`.
 

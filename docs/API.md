@@ -41,7 +41,8 @@ Returns:
 
 Returns a paste-ready Markdown review table. Pipe delimiters in action and policy
 values are escaped, and embedded line breaks are rendered as `<br>` to preserve
-the table structure.
+the table structure. CR, LF, and CRLF line breaks in the connector identifier
+are likewise rendered as `<br>` so its heading remains a single Markdown line.
 
 ## `readJsonFile(path)`
 
