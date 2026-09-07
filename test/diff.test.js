@@ -284,6 +284,46 @@ test("renders user and policy values without breaking markdown table cells", () 
   assert.equal(markdown.split("\n").filter((line) => line.startsWith("| ")).length, 3);
 });
 
+test("renders multiline connector identifiers on one markdown heading line", () => {
+  for (const connector of ["demo-crm\nOperator note", "demo-crm\rOperator note", "demo-crm\r\nOperator note"]) {
+    const diff = diffPermissions(
+      {
+        connector,
+        actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
+      },
+      {
+        connector,
+        rules: [{ action: "contacts.read", decision: "allow" }]
+      }
+    );
+
+    const markdown = renderMarkdown(diff);
+    assert.equal(markdown.split("\n")[0], "# Connector Permission Diff: demo-crm<br>Operator note");
+    assert.equal(markdown.includes("\r"), false);
+  }
+});
+
+test("cli keeps multiline connector identifiers inside the markdown heading", (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "permission-diff-connector-"));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const connector = "demo-crm\r\nOperator note";
+  const manifestPath = path.join(directory, "manifest.json");
+  const policyPath = path.join(directory, "policy.json");
+  fs.writeFileSync(manifestPath, JSON.stringify({
+    connector,
+    actions: [{ name: "contacts.read", effect: "read", scope: "crm.contacts" }]
+  }));
+  fs.writeFileSync(policyPath, JSON.stringify({
+    connector,
+    rules: [{ action: "contacts.read", decision: "allow" }]
+  }));
+
+  const output = run(["--manifest", manifestPath, "--policy", policyPath, "--format", "markdown"]);
+  assert.equal(output.split("\n")[0], "# Connector Permission Diff: demo-crm<br>Operator note");
+  assert.equal(output.includes("\r"), false);
+});
+
 test("cli returns json output", () => {
   const output = run([
     "--manifest",
