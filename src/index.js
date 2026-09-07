@@ -139,7 +139,7 @@ export function diffPermissions(manifestInput, policyInput) {
 
 export function renderMarkdown(diff) {
   const lines = [
-    `# Connector Permission Diff: ${diff.connector}`,
+    `# Connector Permission Diff: ${escapeMarkdownLineBreaks(diff.connector)}`,
     "",
     `Status: ${diff.status}`,
     "",
@@ -172,9 +172,11 @@ export function renderMarkdown(diff) {
 }
 
 function escapeMarkdownCell(value) {
-  return String(value ?? "")
-    .replaceAll("|", "\\|")
-    .replace(/\r\n?|\n/g, "<br>");
+  return escapeMarkdownLineBreaks(value).replaceAll("|", "\\|");
+}
+
+function escapeMarkdownLineBreaks(value) {
+  return String(value ?? "").replace(/\r\n?|\n/g, "<br>");
 }
 
 function normalizeAction(action, index) {
